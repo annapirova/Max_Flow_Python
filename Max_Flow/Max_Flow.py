@@ -14,6 +14,8 @@ while (1):
         #------------------------------------------------#
         min_G, max_G, n_G = Functions.input_values();
         graf_matrix = Functions.new_rand_graf_matrix(min_G, max_G, n_G);
+        Adj, X_Adj, c, GR_list, h, e = Functions.graf_matrix_to_graf_list(graf_matrix, n_G)
+        Functions.print_graf_list(Adj, X_Adj, c, n_G)
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:
