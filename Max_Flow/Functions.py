@@ -22,6 +22,17 @@ def new_rand_graf_matrix(min_G_tmp, max_G_tmp, n_G_tmp):
 
     return graf_matrix_tmp
 
+def file_to_graf_matrix():
+    f = open('graf_matrix.txt')
+    n_G_tmp = 0
+    graf_matrix_tmp = []
+    for line in f:
+        tmp = [int(i) for i in line.split()]
+        graf_matrix_tmp.append(tmp)
+        n_G_tmp = n_G_tmp + 1
+    return graf_matrix_tmp, n_G_tmp
+    f.close
+
 def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):    
     
     Adj_tmp = []
