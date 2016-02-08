@@ -1,28 +1,7 @@
 import math, sys, random, queue
 
-def input_values():
-    min_tmp = int(input("Enter an interval of values of elements of a matrix \n\nMinimum value: "))
-    max_tmp = int(input("\nMaximum value: "))
-    n_tmp = int(input("\nQuantity of columns: "))
-    print()
-    return min_tmp, max_tmp, n_tmp
-
-def new_rand_graf_matrix(min_G_tmp, max_G_tmp, n_G_tmp):
-
-    graf_matrix_tmp = [0] * n_G_tmp
-    for i in range(n_G_tmp):
-        graf_matrix_tmp[i] = [0] * n_G_tmp
-
-    for i in range(n_G_tmp):
-        for j in range(n_G_tmp):
-            if (j == 0) or (i == n_G_tmp - 1) or (i == j): graf_matrix_tmp[i][j] = -1
-            else: graf_matrix_tmp[i][j] = random.randint(min_G_tmp, max_G_tmp)
-        print(graf_matrix_tmp[i])
-    print()
-
-    return graf_matrix_tmp
-
 def file_to_graf_matrix():
+    
     f = open('graf_matrix.txt')
     n_G_tmp = 0
     graf_matrix_tmp = []
@@ -54,16 +33,41 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
         X_Adj_tmp.append(Adj_index_tmp)
         XAdj_index_tmp = XAdj_index_tmp + 1             
 
-    return Adj_tmp, X_Adj_tmp, c_tmp, GR_list_tmp, h_tmp, e_tmp
+    f_tmp = [0] * len(Adj_tmp)
 
-def print_graf_list(Adj_tmp, X_Adj_tmp, c_tmp, n_G_tmp):
-    print("1: ", sep = '', end = '') 
+    return Adj_tmp, X_Adj_tmp, c_tmp, GR_list_tmp, h_tmp, e_tmp, f_tmp
+
+def print_graf_list(Adj_tmp, X_Adj_tmp, c_tmp):
+    
+    print("0: ", sep = '', end = '') 
     k = 0; i = 0
     while i != len(Adj_tmp):
         if i != X_Adj_tmp[k]: print(Adj_tmp[i], "(", c_tmp[i], "), ", sep = '', end = '')   
         else:
             k = k + 1            
-            print("\n", k + 1, ": ", sep = '', end = '')   
+            print("\n", k, ": ", sep = '', end = '')   
             print(Adj_tmp[i], "(", c_tmp[i], "), ", sep = '', end = '') 
         i = i + 1
-    print()
+    print(); print()
+
+def add_f(value, from_v, in_v, Adj_tmp, X_Adj_tmp, f_tmp):
+    
+    if from_v != 0: i = X_Adj_tmp[from_v - 1] 
+    else: i = 0
+    
+    while 1 == 1:
+        if Adj_tmp[i] == in_v: break
+        i = i + 1
+     
+    f_tmp[i] = value   
+
+def get_f(from_v, in_v, Adj_tmp, X_Adj_tmp, f_tmp):
+    
+    if from_v != 0: i = X_Adj_tmp[from_v - 1] 
+    else: i = 0
+    
+    while 1 == 1:
+        if Adj_tmp[i] == in_v: break
+        i = i + 1  
+    
+    return f_tmp[i]   

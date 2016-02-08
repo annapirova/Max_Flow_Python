@@ -3,8 +3,8 @@ import os, math
 
 while (1):
     os.system("cls")
-    print("------ Decision of system of the linear equations by the Gauss method ------ \n")
-    print("  1) Push relabel maximum flow algorithm;")
+    print("------ Algorithms on graphs: search of the maximum flow ------ \n")
+    print("  1) Push relabel algorithm;")
     print("  2) Exit from the program; \n")
     index = input("  Enter the necessary point of the menu: ")
     if index == '': index = 0 
@@ -12,11 +12,12 @@ while (1):
     if index == 1:
         os.system("cls")
         #------------------------------------------------#
-        #min_G, max_G, n_G = Functions.input_values()
-        #graf_matrix = Functions.new_rand_graf_matrix(min_G, max_G, n_G)
         graf_matrix, n_G = Functions.file_to_graf_matrix()
-        Adj, X_Adj, c, GR_list, h, e = Functions.graf_matrix_to_graf_list(graf_matrix, n_G)
-        Functions.print_graf_list(Adj, X_Adj, c, n_G)
+        Adj, X_Adj, c, GR_list, h, e, f = Functions.graf_matrix_to_graf_list(graf_matrix, n_G)
+        print("Capacity: ")
+        Functions.print_graf_list(Adj, X_Adj, c)
+        print("Flow: ")
+        Functions.print_graf_list(Adj, X_Adj, f)
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:
