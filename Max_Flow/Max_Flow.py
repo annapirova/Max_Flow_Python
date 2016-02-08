@@ -1,4 +1,4 @@
-import Functions
+import Functions as Fun
 import os, math
 
 while (1):
@@ -12,12 +12,12 @@ while (1):
     if index == 1:
         os.system("cls")
         #------------------------------------------------#
-        graf_matrix, n_G = Functions.file_to_graf_matrix()
-        Adj, X_Adj, c, GR_list, h, e, f = Functions.graf_matrix_to_graf_list(graf_matrix, n_G)
+        graf_matrix, n_G = Fun.file_to_graf_matrix()
+        Adj, X_Adj, c, GR_list, h, e, f = Fun.graf_matrix_to_graf_list(graf_matrix, n_G)
         print("Capacity: ")
-        Functions.print_graf_list(Adj, X_Adj, c)
+        Fun.print_graf_list(Adj, X_Adj, c)
         print("Flow: ")
-        Functions.print_graf_list(Adj, X_Adj, f)
+        Fun.print_graf_list(Adj, X_Adj, f)
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:
