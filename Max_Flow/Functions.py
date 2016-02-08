@@ -38,7 +38,7 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
     Adj_tmp = []
     X_Adj_tmp = []
     c_tmp = []
-    GR_list_tmp = queue.Queue()
+    GR_list_tmp = queue.Queue
     h_tmp = [0] * n_G_tmp
     e_tmp = [0] * n_G_tmp
     
@@ -47,7 +47,7 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
 
     for i in range(n_G_tmp):
         for j in range(n_G_tmp):
-            if ((graf_matrix_tmp[i][j] != 0) or (graf_matrix_tmp[j][i] != 0)) and (graf_matrix_tmp[j][i] != -1):
+            if graf_matrix_tmp[i][j] != -1:
                 Adj_tmp.append(j)
                 c_tmp.append(graf_matrix_tmp[i][j])
                 Adj_index_tmp = Adj_index_tmp + 1
@@ -57,11 +57,13 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
     return Adj_tmp, X_Adj_tmp, c_tmp, GR_list_tmp, h_tmp, e_tmp
 
 def print_graf_list(Adj_tmp, X_Adj_tmp, c_tmp, n_G_tmp):
-    
-    print("1: ") 
-    k = 1 
-    for i in range(n_G_tmp):
-        if i != X_Adj_tmp[k]: print(Adj_tmp[i], "(", c_tmp[i], "), ")   
+    print("1: ", sep = '', end = '') 
+    k = 0; i = 0
+    while i != len(Adj_tmp):
+        if i != X_Adj_tmp[k]: print(Adj_tmp[i], "(", c_tmp[i], "), ", sep = '', end = '')   
         else:
-            k = k + 1
-            print("\n", k + 1, ": ")                    
+            k = k + 1            
+            print("\n", k + 1, ": ", sep = '', end = '')   
+            print(Adj_tmp[i], "(", c_tmp[i], "), ", sep = '', end = '') 
+        i = i + 1
+    print()
