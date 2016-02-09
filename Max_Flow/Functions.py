@@ -17,7 +17,7 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
     Adj_tmp = []
     X_Adj_tmp = []
     c_tmp = []
-    GR_list_tmp = queue.Queue
+    GR_list_tmp = queue.Queue()
     h_tmp = [0] * n_G_tmp
     e_tmp = [0] * n_G_tmp
     
@@ -114,4 +114,21 @@ def adjacency(u, Adj_tmp, X_Adj_tmp):
         adj_list.append(Adj_tmp[i])
         i = i + 1
     
-    return adj_list            
+    return adj_list     
+
+def init_bfs(u, h_tmp, Adj_tmp, X_Adj_tmp):
+
+    Q = queue.Queue()
+    Q.put(u)
+    old = []
+    while not Q.empty():
+        v = Q.get()
+        old.append(v)
+        adj_list = adjacency(v, Adj_tmp, X_Adj_tmp)
+        i = 0
+        while i < len(adj_list):
+            y = adj_list[i]
+            if old.count(y) == 0: 
+                Q.put(y)
+                h_tmp[y] = h_tmp[v] + 1
+            i = i + 1

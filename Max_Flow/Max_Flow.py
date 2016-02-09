@@ -18,6 +18,8 @@ while (1):
         Fun.print_graf_list(Adj, X_Adj, c)
         print("Flow: ")
         Fun.print_graf_list(Adj, X_Adj, f)
+        Fun.init_bfs(n_G - 1, h, Adj, X_Adj)
+        print(h)
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:
