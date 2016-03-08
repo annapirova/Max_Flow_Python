@@ -22,13 +22,15 @@ while (1):
         print("e =",e)
         print("h =",h)
         print()
-        print("Answer: ")
-        i = 1
-        Fun.discharge(i, e, h, Adj, X_Adj, c, f)
-        Fun.print_graf_list(Adj, X_Adj, f)        
-        print("e =",e)
-        print("h =",h)
-        print()
+        print("Answer: ");
+        while (not Fun.active_vertex_empty()):
+            u = Fun.get_new_active_vertex()
+            Fun.discharge(u, e, h, Adj, X_Adj, c, f)
+            Fun.add_new_active_vertex(e)
+            Fun.print_graf_list(Adj, X_Adj, f)        
+            print("e =",e)
+            print("h =",h)
+            print()
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:

@@ -97,7 +97,8 @@ def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
         v = adj_list[i]
         if h[u] <= h[v]: tmp.append(h[v])
         i = i + 1
-    h[u] = min(tmp) + 1        
+    if len(tmp) != 0: 
+        h[u] = min(tmp) + 1        
 
 def adjacency(u, Adj_tmp, X_Adj_tmp):
     
@@ -132,6 +133,7 @@ def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     i = 0
     while i < len(list_per_flow):
         u = list_per_flow[i]
+        add_new_active_vertex(e)
         value = get_f(0, u, Adj_tmp, X_Adj_tmp, c_tmp)
         add_f(value, 0, u, Adj_tmp, X_Adj_tmp, f_tmp)
         add_f(-value, u, 0, Adj_tmp, X_Adj_tmp, f_tmp)
@@ -143,10 +145,28 @@ def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     adj_list = adjacency(u, Adj_tmp, X_Adj_tmp)
     i = 0
-    while i < len(adj_list):
+    while e[u] > 0:
         v = adj_list[i]
-        if i == len(adj_list)-1: 
+        if  i == len(adj_list) - 1: 
             relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
-            i = i + 1
-        elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
+            i = 0
+        elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  
+            push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
         else: i = i + 1
+    
+que = queue.Queue()
+
+def get_new_active_vertex():
+    
+    return que.get()
+
+def add_new_active_vertex(e_tmp):
+    
+    i = 0
+    while i < len(e_tmp):
+        if (e_tmp[i] > 0): que.put(i)
+        i = i + 1
+
+def active_vertex_empty():
+
+    return que.empty()
