@@ -75,32 +75,28 @@ def get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp):
 def c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     c = get_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp)    
-    f = get_c(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
+    f = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
     return c - f
 
 def push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
-    if e[u] > 0:
-        if c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0:
-            if h[u] == h(v) + 1:
-                d = min(e[u], c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp))
-                flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-                add_f(flow + d, u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-                neg_flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-                flow = get_f(v, u, Adj_tmp, X_Adj_tmp, f_tmp)
-                add_f(flow - neg_flow, v, u, Adj_tmp, X_Adj_tmp, f_tmp)
-                e[u] = e[u] - d; e[v] = e[v] + d
+    d = min(e[u], c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp))
+    flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
+    add_f(flow + d, u, v, Adj_tmp, X_Adj_tmp, f_tmp)
+    neg_flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
+    flow = get_f(v, u, Adj_tmp, X_Adj_tmp, f_tmp)
+    add_f(flow - neg_flow, v, u, Adj_tmp, X_Adj_tmp, f_tmp)
+    e[u] = e[u] - d; e[v] = e[v] + d
 
 def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     adj_list = adjacency(u, Adj_tmp, X_Adj_tmp)
     tmp = []
     i = 0
-    if e[u] > 0: 
-        while i < len(adj_list):
-            v = adj_list[i]
-            if (c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0):
-                if h[u] <= h[v]: tmp.append(h[v])
+    while i < len(adj_list):
+        v = adj_list[i]
+        if h[u] <= h[v]: tmp.append(h[v])
+        i = i + 1
     h[u] = min(tmp) + 1        
 
 def adjacency(u, Adj_tmp, X_Adj_tmp):
@@ -116,7 +112,7 @@ def adjacency(u, Adj_tmp, X_Adj_tmp):
     
     return adj_list     
 
-def init_bfs(u, h_tmp, Adj_tmp, X_Adj_tmp):
+def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
 
     Q = queue.Queue()
     Q.put(u)
@@ -132,3 +128,25 @@ def init_bfs(u, h_tmp, Adj_tmp, X_Adj_tmp):
                 Q.put(y)
                 h_tmp[y] = h_tmp[v] + 1
             i = i + 1
+    list_per_flow = adjacency(0, Adj_tmp, X_Adj_tmp)  
+    i = 0
+    while i < len(list_per_flow):
+        u = list_per_flow[i]
+        value = get_f(0, u, Adj_tmp, X_Adj_tmp, c_tmp)
+        add_f(value, 0, u, Adj_tmp, X_Adj_tmp, f_tmp)
+        add_f(-value, u, 0, Adj_tmp, X_Adj_tmp, f_tmp)
+        e[u] = value
+        e[0] = e[0] - value
+        i = i + 1
+
+def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
+    
+    adj_list = adjacency(u, Adj_tmp, X_Adj_tmp)
+    i = 0
+    while i < len(adj_list):
+        v = adj_list[i]
+        if i == len(adj_list)-1: 
+            relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
+            i = i + 1
+        elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
+        else: i = i + 1
