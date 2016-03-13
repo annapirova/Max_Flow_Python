@@ -120,7 +120,7 @@ def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     old = []
     while not Q.empty():
         v = Q.get()
-        old.append(v)
+        old.append(v)        
         adj_list = adjacency(v, Adj_tmp, X_Adj_tmp)
         i = 0
         while i < len(adj_list):
@@ -129,16 +129,25 @@ def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
                 Q.put(y)
                 h_tmp[y] = h_tmp[v] + 1
             i = i + 1
-    list_per_flow = adjacency(0, Adj_tmp, X_Adj_tmp)  
+    list_per_flow = adjacency(0, Adj_tmp, X_Adj_tmp)
+    
     i = 0
     while i < len(list_per_flow):
         u = list_per_flow[i]
-        add_new_active_vertex(e)
         value = get_f(0, u, Adj_tmp, X_Adj_tmp, c_tmp)
         add_f(value, 0, u, Adj_tmp, X_Adj_tmp, f_tmp)
         add_f(-value, u, 0, Adj_tmp, X_Adj_tmp, f_tmp)
         e[u] = value
         e[0] = e[0] - value
+        i = i + 1
+    
+    old = []; i = 1
+    while i < len(X_Adj_tmp) - 1:
+        old.append(i)
+        i = i + 1
+    random.shuffle(old); i = 0
+    while i < len(old):
+        que.put(old[i])
         i = i + 1
 
 def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
@@ -153,7 +162,26 @@ def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
         elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  
             push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
         else: i = i + 1
-    
+
+def relabel_to_front(e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp, n_G):
+
+    init_bfs(n_G - 1, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
+    print("e =",e)
+    print("h =",h)
+    print()
+    print("Answer: ")
+    u = que.get()
+    while not que.empty():
+        old_height = h[u]
+        discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
+        if h[u] == old_height + 1: que.put(u)
+        u = que.get()
+        print_graf_list(Adj_tmp, X_Adj_tmp, f_tmp)        
+        print("e =",e)
+        print("h =",h)
+        print()    
+#------------------------------------------------#
+
 que = queue.Queue()
 
 def get_new_active_vertex():

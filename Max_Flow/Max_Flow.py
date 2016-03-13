@@ -18,19 +18,7 @@ while (1):
         Fun.print_graf_list(Adj, X_Adj, c)
         print("Flow: ")
         Fun.print_graf_list(Adj, X_Adj, f)
-        Fun.init_bfs(n_G - 1, e, h, Adj, X_Adj, c, f)
-        print("e =",e)
-        print("h =",h)
-        print()
-        print("Answer: ");
-        while (not Fun.active_vertex_empty()):
-            u = Fun.get_new_active_vertex()
-            Fun.discharge(u, e, h, Adj, X_Adj, c, f)
-            Fun.add_new_active_vertex(e)
-            Fun.print_graf_list(Adj, X_Adj, f)        
-            print("e =",e)
-            print("h =",h)
-            print()
+        Fun.relabel_to_front(e, h, Adj, X_Adj,c, f, n_G)        
         #------------------------------------------------#
         os.system("pause")
     elif index == 2:
