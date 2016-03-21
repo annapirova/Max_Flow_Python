@@ -1,28 +1,11 @@
 import Functions as Fun
-import os, math
+import os, math, random
 
-while (1):
-    os.system("cls")
-    print("------ Algorithms on graphs: search of the maximum flow ------ \n")
-    print("  1) Push relabel algorithm;")
-    print("  2) Exit from the program; \n")
-    index = input("  Enter the necessary point of the menu: ")
-    if index == '': index = 0 
-    else: index = int(index)
-    if index == 1:
-        os.system("cls")
-        #------------------------------------------------#
-        graf_matrix, n_G = Fun.file_to_graf_matrix()
-        Adj, X_Adj, c, GR_list, h, e, f = Fun.graf_matrix_to_graf_list(graf_matrix, n_G)
-        print("Capacity: ")
-        Fun.print_graf_list(Adj, X_Adj, c)
-        print("Flow: ")
-        Fun.print_graf_list(Adj, X_Adj, f)
-        Fun.relabel_to_front(e, h, Adj, X_Adj,c, f, n_G)        
-        #------------------------------------------------#
-        os.system("pause")
-    elif index == 2:
-        os.system("cls")
-        break
-
-#os.system("pause")
+graf_matrix, n_G = Fun.file_to_graf_matrix()
+Adj, X_Adj, c, GR_list, h, e, f = Fun.graf_matrix_to_graf_list(graf_matrix, n_G)
+print("Capacity: ")
+Fun.print_graf_list(Adj, X_Adj, c)
+print("Flow: ")
+Fun.print_graf_list(Adj, X_Adj, f)
+Fun.relabel_to_front(e, h, Adj, X_Adj,c, f, n_G) 
+os.close(1)

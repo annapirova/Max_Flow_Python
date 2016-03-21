@@ -26,7 +26,7 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
 
     for i in range(n_G_tmp):
         for j in range(n_G_tmp):
-            if graf_matrix_tmp[i][j] != -1:
+            if graf_matrix_tmp[i][j] != 0:
                 Adj_tmp.append(j)
                 c_tmp.append(graf_matrix_tmp[i][j])
                 Adj_index_tmp = Adj_index_tmp + 1
