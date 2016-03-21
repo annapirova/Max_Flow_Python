@@ -1,5 +1,9 @@
 import math, sys, random, queue
 
+que = queue.Queue()
+
+#------------------------------------------------#
+
 def file_to_graf_matrix():
     
     f = open('graf_matrix.txt')
@@ -28,7 +32,8 @@ def graf_matrix_to_graf_list(graf_matrix_tmp, n_G_tmp):
         for j in range(n_G_tmp):
             if graf_matrix_tmp[i][j] != 0:
                 Adj_tmp.append(j)
-                c_tmp.append(graf_matrix_tmp[i][j])
+                if graf_matrix_tmp[i][j] > 0:c_tmp.append(graf_matrix_tmp[i][j])
+                else: c_tmp.append(0)
                 Adj_index_tmp = Adj_index_tmp + 1
         X_Adj_tmp.append(Adj_index_tmp)
         XAdj_index_tmp = XAdj_index_tmp + 1             
@@ -82,10 +87,9 @@ def push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     d = min(e[u], c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp))
     flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-    add_f(flow + d, u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-    neg_flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
-    flow = get_f(v, u, Adj_tmp, X_Adj_tmp, f_tmp)
-    add_f(flow - neg_flow, v, u, Adj_tmp, X_Adj_tmp, f_tmp)
+    add_f(flow + d, u, v, Adj_tmp, X_Adj_tmp, f_tmp) 
+    flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
+    add_f(-flow, v, u, Adj_tmp, X_Adj_tmp, f_tmp)
     e[u] = e[u] - d; e[v] = e[v] + d
 
 def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
@@ -95,10 +99,9 @@ def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     i = 0
     while i < len(adj_list):
         v = adj_list[i]
-        if h[u] <= h[v]: tmp.append(h[v])
+        if ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] <= h[v])): tmp.append(h[v])
         i = i + 1
-    if len(tmp) != 0: 
-        h[u] = min(tmp) + 1        
+    if len(tmp) != 0: h[u] = min(tmp) + 1        
 
 def adjacency(u, Adj_tmp, X_Adj_tmp):
     
@@ -141,60 +144,46 @@ def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
         e[0] = e[0] - value
         i = i + 1
     
-    old = []; i = 1
+    i = 1
     while i < len(X_Adj_tmp) - 1:
-        old.append(i)
-        i = i + 1
-    random.shuffle(old); i = 0
-    while i < len(old):
-        que.put(old[i])
+        que.put(i)
         i = i + 1
 
 def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     adj_list = adjacency(u, Adj_tmp, X_Adj_tmp)
     i = 0
-    while e[u] > 0:
-        v = adj_list[i]
-        if  i == len(adj_list) - 1: 
+    v = adj_list[i]
+    while e[u] > 0:        
+        if  i == len(adj_list): 
             relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
             i = 0
         elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  
             push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
         else: i = i + 1
+        if i != len(adj_list): v = adj_list[i]
 
 def relabel_to_front(e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp, n_G):
 
     init_bfs(n_G - 1, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
-    print("e =",e)
-    print("h =",h)
-    print()
-    print("Answer: ")
-    u = que.get()
-    while not que.empty():
-        old_height = h[u]
+    print("e =",e); print("h =",h); print(); 
+    u = que.get(); print ("u =",u)
+
+    while not que.empty():     
+        old_height = h[u]  
         discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
-        if h[u] == old_height + 1: que.put(u)
-        u = que.get()
+        if h[u] > old_height: 
+            que.put(u)     
+        u = que.get()   
+        print ("Next u =",u); print("Flow: ")
         print_graf_list(Adj_tmp, X_Adj_tmp, f_tmp)        
-        print("e =",e)
-        print("h =",h)
-        print()    
-#------------------------------------------------#
+        print("e =",e); print("h =",h); print()
 
-que = queue.Queue()
-
-def get_new_active_vertex():
-    
-    return que.get()
-
-def add_new_active_vertex(e_tmp):
-    
+    print("Answer: ")
     i = 0
-    while i < len(e_tmp):
-        if (e_tmp[i] > 0): que.put(i)
+    while i < len(f_tmp): 
+        if f_tmp[i] < 0: f_tmp[i] = 0
         i = i + 1
-
-def active_vertex_empty():
-
-    return que.empty()
+    print_graf_list(Adj_tmp, X_Adj_tmp, f_tmp) 
+           
+#------------------------------------------------#
