@@ -6,7 +6,7 @@ que = queue.Queue()
 
 def file_to_graf_matrix():
     
-    f = open('graf_matrix.txt')
+    f = open('graf_matrix4.txt')
     n_G_tmp = 0
     graf_matrix_tmp = []
     for line in f:
@@ -86,11 +86,13 @@ def c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
 def push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
     d = min(e[u], c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp))
+    print("push ", u, v , d)
     flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
     add_f(flow + d, u, v, Adj_tmp, X_Adj_tmp, f_tmp) 
     flow = get_f(u, v, Adj_tmp, X_Adj_tmp, f_tmp)
     add_f(-flow, v, u, Adj_tmp, X_Adj_tmp, f_tmp)
     e[u] = e[u] - d; e[v] = e[v] + d
+    if (e[v] > 0) and (v != len(X_Adj_tmp) - 1): que.put(v) # если возникло переполнение 
 
 def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
     
@@ -101,7 +103,8 @@ def relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
         v = adj_list[i]
         if ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] <= h[v])): tmp.append(h[v])
         i = i + 1
-    if len(tmp) != 0: h[u] = min(tmp) + 1        
+    if len(tmp) != 0: h[u] = min(tmp) + 1
+    print("relabel ", u, h[u])        
 
 def adjacency(u, Adj_tmp, X_Adj_tmp):
     
@@ -120,20 +123,35 @@ def init_bfs(u, e, h_tmp, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
 
     Q = queue.Queue()
     Q.put(u)
-    old = []
+    old = [0] * (len(X_Adj_tmp)) # массив меток
     while not Q.empty():
         v = Q.get()
-        old.append(v)        
+        old[v] = 1        
         adj_list = adjacency(v, Adj_tmp, X_Adj_tmp)
         i = 0
         while i < len(adj_list):
             y = adj_list[i]
-            if old.count(y) == 0: 
+            if (old[y] == 0) and (c_tmp[i] == 0) : # найти индекс c_temp ( он синхронный с adj_list)
                 Q.put(y)
                 h_tmp[y] = h_tmp[v] + 1
             i = i + 1
-    list_per_flow = adjacency(0, Adj_tmp, X_Adj_tmp)
     
+    print("*** init_bfs h =",h_tmp)
+    #для gr_m_4
+    #h_tmp[0] = 2
+    #h_tmp[1] = 1
+    #h_tmp[2] = 1
+    #h_tmp[3] = 0
+
+    #h_tmp[0] = 3
+    #h_tmp[1] = 2
+    #h_tmp[2] = 2
+    #h_tmp[3] = 1
+    #h_tmp[4] = 1
+    #h_tmp[5] = 0
+
+    list_per_flow = adjacency(0, Adj_tmp, X_Adj_tmp)
+
     i = 0
     while i < len(list_per_flow):
         u = list_per_flow[i]
@@ -158,6 +176,7 @@ def discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp):
         if  i == len(adj_list): 
             relabel(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
             i = 0
+            break
         elif ((c_f(u, v, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp) > 0) and (h[u] == h[v] + 1)):  
             push(u, v, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
         else: i = i + 1
@@ -167,15 +186,17 @@ def relabel_to_front(e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp, n_G):
 
     init_bfs(n_G - 1, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
     print("e =",e); print("h =",h); print(); 
-    u = que.get(); print ("u =",u)
+    #u = que.get(); 
 
     while not que.empty():     
+        u = que.get()
+        print ("u =",u)
         old_height = h[u]  
         discharge(u, e, h, Adj_tmp, X_Adj_tmp, c_tmp, f_tmp)
         if h[u] > old_height: 
             que.put(u)     
-        u = que.get()   
-        print ("Next u =",u); print("Flow: ")
+        #u = que.get()   
+        print("Flow: ")
         print_graf_list(Adj_tmp, X_Adj_tmp, f_tmp)        
         print("e =",e); print("h =",h); print()
 
